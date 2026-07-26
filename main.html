@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
+<title>Lola Blue Tracker</title>
+<style>
+:root {
+  --bg: #080808;
+  --panel: #101010;
+  --panel-2: #171717;
+  --border: #292929;
+  --text: #f4f4f4;
+  --muted: #8e8e8e;
+  --accent: #aebed0;
+  --yellow: #f4c936;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: url("./assets/bg/bg.gif");
+  background-repeat: repeat;
+background-size: cover;
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'Lato', sans-serif;
+}
+.app { max-width: 1280px; margin: auto; padding: 28px 28px 60px; }
+.topbar {
+  display: flex; align-items: center; gap: 18px; margin-bottom: 28px;
+}
+.brand { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.global-search {
+  flex: 1; background: #111; border: 1px solid #242424; border-radius: 14px;
+  padding: 14px 18px; color: white; outline: none; font-size: 14px;
+}
+.icon-btn, .load-btn {
+  border: 1px solid #292929; border-radius: 12px;
+  padding: 12px 15px; cursor: pointer;
+}
+.load-btn { background: #fff; color: #111; font-weight: 700; }
+.hero {display: flex; align-items: center; gap: 18px; margin-bottom: 24px; }
+.avatar {
+  #lola-img {
+    width: 72px; height: 72px; border-radius: 18px; object-fit: cover;
+    background: linear-gradient(135deg, #d7c8b5, #555);
+  }
+}
+.artist h1 { margin: 0; font-size: 28px; }
+.artist p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+.tab {
+  border: 1px solid #292929; background: #111; color: #aaa; border-radius: 999px;
+  padding: 10px 15px; cursor: pointer; font-weight: 650; font-size: 13px;
+}
+.tab.active { background: #fff; color: #111; border-color: #fff; }
+.controls { display: flex; gap: 12px; margin-bottom: 14px; }
+.track-search {
+  flex: 1; background: #111; border: 1px solid #242424; border-radius: 13px;
+  color: white; padding: 15px; outline: none;
+}
+select {
+  background: #111; color: #bbb; border: 1px solid #292929; border-radius: 13px;
+  padding: 0 14px;
+}
+.stats { color: #777; font-size: 13px; margin: 20px 0 14px; }
+.release {
+  border: 1px solid #343f48; background: #0f1c27; border-radius: 17px;
+  margin-bottom: 20px; overflow: hidden;
+}
+.release:nth-child(even) { background: #1d1808; border-color: #3e351a; }
+.release-header {
+  display: flex; align-items: center; gap: 16px; padding: 20px;
+  cursor: pointer;
+}
+.cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.release-info { flex: 1; }
+.release-title { font-size: 18px; font-weight: 800; }
+.release-meta { color: #8e969c; font-size: 13px; margin-top: 4px; }
+.chevron { color: #777; font-size: 20px; }
+.release-description {
+  margin: 0 20px 18px; padding: 15px; border-radius: 12px;
+  background: rgba(0,0,0,.22); color: #929292; font-size: 13px;
+}
+.release.pink {
+  background: rgba(66, 73, 117);
+  border-color: #402e38;
+}
+.release.ep {
+  background: rgba(61, 67, 56);
+  border-color: #402e38;
+}
+.tracks { padding: 0 20px 20px; }
+.track {
+  display: flex; align-items: center; gap: 14px; padding: 14px 12px;
+  border: 1px solid rgba(255,255,255,.08); background: rgba(0,0,0,.18);
+  border-radius: 13px; margin-top: 9px;
+}
+.play {
+  width: 38px; height: 38px; border: 0; border-radius: 50%; background: white;
+  color: black; cursor: pointer; font-size: 15px;
+}
+.play.released {
+  background: var(--yellow);
+  color: #111;
+}
+.track-main { flex: 1; min-width: 0; }
+.track-name { font-weight: 750; }
+.track-sub { color: #7f7f7f; font-size: 12px; margin-top: 4px; }
+.track-description {
+  color: #a0a0a0;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 7px;
+}
+.badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.badge {
+  font-size: 11px; color: #aaa; border: 1px solid #3b3b3b; border-radius: 7px;
+  padding: 5px 8px; background: rgba(255,255,255,.04);
+}
+.star { color: var(--yellow); margin-right: 4px; }
+.actions { color: #888; font-size: 18px; cursor: pointer; }
+.hidden { display: none; }
+@media(max-width: 760px) {
+  .app { padding: 18px 12px 40px; }
+  .topbar { flex-wrap: wrap; }
+  .brand { width: 100%; }
+  .global-search { order: 3; flex-basis: 100%; }
+  .controls { flex-direction: column; }
+  select { height: 48px; }
+  .track { align-items: flex-start; }
+  .badges { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div hidden class="brand">LolaTracker</div>
+    <input hidden id="globalSearch" class="global-search" placeholder="Search for a song, album, demo, era...">
+    <button hidden class="icon-btn">↗</button>
+    <button hidden class="icon-btn">⚙</button>
+    <button hidden class="load-btn" onclick="alert('idk why imported ts, spaguetti code supremacy')">Load</button>
+  </div>
+
+  <section class="hero">
+    <div class="avatar"><img src="lola-icon.jpg" alt="LB" id="lola-img"></div>
+    <div class="artist">
+      <h1>Lola Blue</h1>
+      <p>Front-end and box layouts completely derived from artistgrid.cx. Tracker made by <i>larpkfc</i> (discord).<br>©️ All rights reserved to Lola Blue</p>
+    </div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" data-filter="all">🎵 All</button>
+    <button class="tab" data-filter="unreleased">⏱ Unreleased</button>
+    <button class="tab" data-filter="released">💿 Released</button>
+    <button class="tab" data-filter="demo">✨ Demos</button>
+    <button class="tab" data-filter="cover">🎙 Covers</button>
+    <button hidden class="tab" data-filter="favorite">⭐ Favourites</button>
+    <button hidden class="tab" data-filter="archive">🗃 Archive</button>
+  </div>
+
+  <div class="controls">
+    <input id="trackSearch" class="track-search" placeholder="🔍  Search tracks...">
+    <select id="sort">
+      <option value="default">Sort: Default</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+    </select>
+  </div>
+
+  <div class="stats"><span id="count">0</span> tracks · <span id="playable">0</span> playable</div>
+  <main id="releases"></main>
+</div>
+
+<script>
+const releases = [
+  {
+    title: "Early Lola Blue Era",
+    meta: "10 registered works",
+    description: "Early recordings, demos and songs by Lola Blue",
+    color: "blue",
+    image: "./assets/early-lola.jpg",
+    tracks: [
+      {
+        name: "Tonight I Feel Like Kafka",
+        type: "cover",
+        tags: ["Cover", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/gcO2bYi",
+        description: "Probably one of the earliest PUBLIC files of her passion for music. Original song by Jealous Of The Birds. Posted in Instagram. Recorded on May 30, 2020."
+      },
+      {
+        name: "Sweather Weather",
+        type: "cover",
+        tags: ["Cover", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/wiGvlYZ",
+        description: "Original song by The Neighbourhood. Posted in TikTok. Recorded on July 3, 2020"
+      },
+      {
+        name: "Forever Means Nothing To Me",
+        type: "demo",
+        tags: ["Demo", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/wMN6e1s",
+        description: "Demo version of 'Forever Means Nothing To Me' released by Lola herself in SoundCloud. Uploaded date: July 9, 2021."
+      },
+      {
+        name: "Molly",
+        type: "demo",
+        tags: ["Demo", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/moiqduK",
+        description: "Demo version of 'Molly' released by Lola herself in Instagram. Recorded on January 30, 2023"
+      },
+      {
+        name: "[Unknown title] / Keep Up",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/i8mo05C",
+        description: "Provisional name: <strong>'Keep Up'</strong>. An unknown song that Lola uploaded in Instagram. Recorded on May 8, 2023."
+      },
+      {
+        name: "[Unknown title] / The Night",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/4BbnjYA",
+        description: "Provisional name: <strong>'The Night'</strong>. Recorded on October 8, 2023."
+      },
+      {
+        name: "Forever Means Nothing To Me",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/oohXShxD5C0?si=6HiswavkhL2jVekn",
+        description: "Polished and released version of the song. Its initial planned launch date was February 16. Final release date: February 29, 2024. <i>For SOME territories, it was March 1.</i>"
+      },
+      {
+        name: "Molly",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/qhTT9Si2Xxg?si=_Ymua_g2YaH8APoJ",
+        description: "Polished and released version of the song. Release date: April 18, 2024."
+      },
+      {
+        name: "Carlisle",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/0gnjdoyO4KE?si=4lewTFdSBJpbjwFp",
+        description: "Her first hit song. Release date: July 25, 2024."
+      },
+      {
+        name: "Your Hand In Mine",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/wvSWG73",
+        description: "Recorded on August 30, 2024."
+      },
+    ]
+  },
+  {
+    title: "Pinky Promise Era",
+    meta: "26 registered works",
+    description: "Lola confirmed in September 2025 that she was working on her first EP. <br>On March 30, she confirmed the EP’s official title and tracklist. <br>This era includes songs, recordings, lives, snippets, demos, and features that are not associated with the EP, but were made during the same period.",
+    color: "pink",
+    image: "./assets/pinky-promise.jpg",
+    tracks: [
+      {
+        name: "Daisy",
+        type: "demo",
+        tags: ["Ahead of schedule","Demo", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/D4LcP4W",
+        description: "Snippet of 'Daisy' demo version published by Lola herself in Tik Tok. Uploaded date: April 20, 2025."
+      },
+      {
+        name: "Heartbeat",
+        type: "demo",
+        tags: ["Demo", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/nye0MGW",
+        description: "Early version of the song. There is no exact date for when it was published."
+      },
+      {
+        name: "Your Hand In Mine",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "Studio Version"],
+        favorite: true,
+        link: "https://imgur.gg/f/j6ye8YS",
+        description: "Published on December 9, 2025."
+      },
+      {
+        name: "Champagne Coast",
+        type: "cover",
+        tags: ["Cover", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/VNulkvF",
+        description: "Original song by Blood Orange. Posted in her secrect account of TikTok. Recorded on December, 2025."
+      },
+      {
+        name: "Heartbeat",
+        type: "unreleased",
+        tags: ["Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/gBeojuj",
+        description: "First beedroom live of Heartbeat. Uploaded date: December 30, 2025. (Tik Tok)"
+      },
+      {
+        name: "Carlisle",
+        type: "unreleased",
+        tags: ["GRAIL 🏆", "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/5VHeC2W",
+        description: "The only one bedroom live of Carlisle. Uploaded date: January 2, 2026. (Tik Tok)"
+      },
+      {
+        name: "I Don't Know How To Leave",
+        type: "demo",
+        tags: ["Demo", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/Meq1O0U",
+        description: "Early version of the song. Uploaded date: January 9, 2026. (Tik Tok)"
+      },
+      {
+        name: "I Thought I Saw Your Face Today",
+        type: "cover",
+        tags: ["Cover", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/jRLZ5gz",
+        description: "Original song by She & Him. Posted in TikTok: January 15, 2026."
+      },
+      {
+        name: "Daisy",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/E6vGyA6",
+        description: "The only one bedroom live of Daisy. Uploaded date: January 20, 2026. (Tik Tok)"
+      },
+      {
+        name: "I Don't Know How To Leave",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/uiZFZws",
+        description: "The only one bedroom live of Daisy. Uploaded date: January 27, 2026. (Tik Tok)"
+      },
+      {
+        name: "Do You Wanna Be Adored?",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/rneXgex",
+        description: "First bedroom live of Do You Wanna Be Adored?. Uploaded date: February 9, 2026. (Tik Tok)"
+      },
+      {
+        name: "Heartbeat",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/PJBTJK8VIWs?si=H-CGbc8saGZb82JX",
+        description: "The song that helped establish her fame. Her first song to receive a music video, and the first to be played on local and international radio stations. Released on February 27, 2026."
+      },
+      {
+        name: "Heartbeat (Live From Bedroom)",
+        type: "released",
+        tags: ["Bedroom", "Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/Upek8BpAFf8?si=r4y6yE-6o1ait3iD",
+        description: "Published on March 6, 2026."
+      },
+      {
+        name: "Daisy",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/WLsBlGwY0Ao?si=GlEmofIgHQnADHT5",
+        description: "Polished and released version of the song. Release date: March 26, 2026."
+      },
+      {
+        name: "Radio",
+        type: "released",
+        tags: ["Feature","Off-Topic", "Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/zL5Ltr4XMuM?si=3oqiZhYCN_TfaaWw",
+        description: "Song released on April 2, 2026. Lola provided additional vocals."
+      },
+      {
+        name: "Daisy (Live From Outside)",
+        type: "released",
+        tags: ["Live Outside", "Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/uQl20CPe7-k?si=Sto5_yJEImS7rBwQ",
+        description: "Published on April 6, 2026."
+      },
+      {
+        name: "[Unknown title] / Undone",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet"],
+        favorite: true,
+        link: "https://imgur.gg/f/PtNsmBY",
+        description: "Provisional name: <strong>'Undone'</strong>. An unknown song that Lola uploaded in Tik Tok. Published on April 17, 2026."
+      },
+      {
+        name: "I Don't Know How To Leave",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/8f2K2IWHDP0?si=vf1pQdzOM0pIuHLv",
+        description: "Polished and released version of the song. Release date: April 23, 2026."
+      },
+      {
+        name: "Seventeen",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/SOV7yId",
+        description: "First bedroom live of Seventeen. Uploaded date: April 27, 2026. (Tik Tok)"
+      },
+
+      {
+        name: "Bass Drum",
+        type: "released",
+        tags: ["Feature","Off-Topic", "Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/laKNCXPzbHc?si=-5E3osnL0fqaTSs-",
+        description: "Song released on April 30, 2026."
+      },
+      {
+        name: "Lost and Found",
+        type: "released",
+        tags: ["Feature","Off-Topic", "Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/NP371EbP_rw?si=SRV_03iqokcS9t7j",
+        description: "Song released on April 30, 2026. Lola took part in the entire song, even though it isn't really noticeable."
+      },
+      {
+        name: "Do You Wanna Be Adored?",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/19YmtPO",
+        description: "Second beedroom live for Do You Wanna Be Adored?. Published on May 3, 2026."
+      },
+      {
+        name: "Seventeen",
+        type: "unreleased",
+        tags: [ "Bedroom", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/x4hGmrv",
+        description: "Second bedroom live of Seventeen. Uploaded date: May 9, 2026. (Tik Tok)"
+      },
+      {
+        name: "Seventeen",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/w7NVjro2vII?si=GkbiAWicXFPihb37",
+        description: "Polished and released version of the song. Release date: May 15, 2026."
+      },
+      {
+        name: "Do You Wanna Be Adored?",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/eImCIlsWuIk?si=PK5drpjeiv4CR84C",
+        description: "Release date: May 15, 2026."
+      },
+      {
+        name: "Lucy",
+        type: "released",
+        tags: ["Released", "Lossless"],
+        favorite: true,
+        link: "https://youtu.be/HO6mpv8Ez0c?si=DRSVTYLwiHNLD5xO",
+        description: "Release date: May 15, 2026."
+      },
+    ]
+  },
+  {
+    title: "Post-EP Era",
+    meta: "3 registered works",
+    description: "The EP was a huge success. However, Lola hasn't confirmed whether she is working on another one, but she has posted snippets of songs she has been writing and confirmed on Instagram that she is spending a lot of time in the studio again.",
+    color: "ep",
+    image: "./assets/post-ep.jpg",
+    tracks: [
+      {
+        name: "[Unknown title] / Impossible Things",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "Recording"],
+        favorite: true,
+        link: "https://imgur.gg/f/e2bt2LW",
+        description: "Provisional name: <strong>'Impossible Things'</strong>. Confirmed Lola is working in this song since June, 2026"
+      },
+      {
+        name: "[Unknown title] / Take Away Our Love",
+        type: "unreleased",
+        tags: ["MEGA GRAIL 🏆" ,"Unreleased", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/gMdcM90",
+        description: "Provisional name: <strong>'Take Away Our Love'</strong>. Lola deleted this snippet, there is no exact date of when it was published."
+      },
+      {
+        name: "[Unknown title] / Begging For Affection",
+        type: "unreleased",
+        tags: ["Unreleased", "Snippet", "High Quality"],
+        favorite: true,
+        link: "https://imgur.gg/f/Wt6MN4Z",
+        description: "Provisional name: <strong>'Begging For Affection'</strong>. Published in Tik Tok: July 8, 2026."
+      },
+    ]
+  }
+];
+
+const releasesEl = document.getElementById("releases");
+const trackSearch = document.getElementById("trackSearch");
+const globalSearch = document.getElementById("globalSearch");
+const countEl = document.getElementById("count");
+const playableEl = document.getElementById("playable");
+let activeFilter = "all";
+
+function render() {
+  const q = (trackSearch.value + " " + globalSearch.value).toLowerCase().trim();
+  const sort = document.getElementById("sort").value;
+  let total = 0, playable = 0;
+
+  releasesEl.innerHTML = releases.map((release, ri) => {
+    let tracks = release.tracks.filter(t => {
+      const filterOk = activeFilter === "all" || t.type === activeFilter || (activeFilter === "favorite" && t.favorite);
+      const searchOk = !q || (t.name + " " + t.tags.join(" ") + " " + release.title).toLowerCase().includes(q);
+      return filterOk && searchOk;
+    });
+
+    if (sort === "az") tracks.sort((a,b)=>a.name.localeCompare(b.name));
+    if (sort === "za") tracks.sort((a,b)=>b.name.localeCompare(a.name));
+    total += tracks.length;
+    playable += tracks.length;
+
+    if (!tracks.length) return "";
+
+    return `<section class="release ${release.color}">
+      <div class="release-header" onclick="toggleRelease(${ri})">
+      <div class="cover">
+        <img src="${release.image}" alt="${release.title}">
+      </div>
+        <div class="release-info">
+          <div class="release-title">${release.title}</div>
+          <div class="release-meta">${release.meta}</div>
+        </div>
+        <div class="chevron" id="chevron-${ri}">⌃</div>
+      </div>
+      <div class="release-description">${release.description}</div>
+      <div class="tracks" id="tracks-${ri}">
+        ${tracks.map((t, ti) => `<div class="track">
+          <button class="play ${t.type === "released" ? "released" : ""}" onclick="playTrack(event, '${t.link}')">▶</button>
+          <div class="track-main">
+          <div class="track-name">${t.favorite ? '<span hidden class="star">★</span>' : ''}${t.name}</div>
+          <div class="track-sub">${t.type} · Lola Blue</div>
+          <div class="track-description">${t.description || ""}</div>
+        </div>
+          <div class="badges">${t.tags.map(x=>`<span class="badge">${x}</span>`).join("")}</div>
+          <div hidden class="actions">♡</div>
+          <div hidden class="actions">⋯</div>
+        </div>`).join("")}
+      </div>
+    </section>`;
+  }).join("");
+
+  countEl.textContent = total;
+  playableEl.textContent = playable;
+}
+
+function toggleRelease(i) {
+  const tracks = document.getElementById("tracks-" + i);
+  const chevron = document.getElementById("chevron-" + i);
+  tracks.classList.toggle("hidden");
+  chevron.textContent = tracks.classList.contains("hidden") ? "⌄" : "⌃";
+}
+
+function playTrack(e, link) {
+  e.stopPropagation();
+  window.open(link, "_blank");
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeFilter = tab.dataset.filter;
+    render();
+  });
+});
+trackSearch.addEventListener("input", render);
+globalSearch.addEventListener("input", render);
+document.getElementById("sort").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
